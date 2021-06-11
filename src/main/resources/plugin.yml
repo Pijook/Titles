@@ -1,0 +1,11 @@
+name: Titles
+author: Pijok
+version: 1.0
+main: pl.pijok.titles.Titles
+api-version: 1.16
+depend:
+  - LuckPerms
+  - Vault
+commands:
+  sbtitle:
+    usage: /sbtitle
