@@ -22,7 +22,7 @@ import java.util.List;
 
 public class TitleController {
 
-    private static HashMap<String, Title> availableTitles;
+    private HashMap<String, Title> availableTitles;
     private Gui mainGui;
 
     public void load(){
@@ -119,7 +119,7 @@ public class TitleController {
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
-    public static void checkTitle(Player player){
+    public void checkTitle(Player player){
 
         Debug.log("&aSprawdzam tytul gracza " + player.getName());
 

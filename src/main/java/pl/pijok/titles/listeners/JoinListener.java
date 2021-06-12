@@ -19,7 +19,7 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
 
         Titles.getOwnerController().loadPlayer(player.getName());
-        TitleController.checkTitle(player);
+        Titles.getTitleController().checkTitle(player);
 
     }
 }
