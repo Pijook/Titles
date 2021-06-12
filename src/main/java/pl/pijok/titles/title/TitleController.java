@@ -1,5 +1,6 @@
 package pl.pijok.titles.title;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.mattstudios.mfgui.gui.components.ItemBuilder;
 import me.mattstudios.mfgui.gui.guis.Gui;
 import me.mattstudios.mfgui.gui.guis.GuiItem;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class TitleController {
 
-    private HashMap<String, Title> availableTitles;
+    private static HashMap<String, Title> availableTitles;
     private Gui mainGui;
 
     public void load(){
@@ -99,20 +100,68 @@ public class TitleController {
 
         String command = "";
         String prefixCommand;
+        String prefix = PlaceholderAPI.setBracketPlaceholders(Bukkit.getPlayer("" + nickname), "{luckperms_prefix}");
+        String suffixFromPrefix = prefix.substring(prefix.lastIndexOf(" ") + 1 );
         if(!owner.getCurrentTitle().equalsIgnoreCase("none")){
-            prefixCommand = "suffix.10." + availableTitles.get(owner.getCurrentTitle()).getPrefix();
-            command = "lp user " + nickname + " permission unset " + prefixCommand + " server=skyblocknew";
+//            prefixCommand = "suffix.10." + availableTitles.get(owner.getCurrentTitle()).getPrefix();
+//            command = "lp user " + nickname + " permission unset " + prefixCommand + " server=skyblocknew";
+            command = "lp user " + nickname + " meta removesuffix 10 * skyblocknew";
 
             Debug.log("[Unset command] " + command);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         }
 
-        prefixCommand = "suffix.10." + availableTitles.get(titleName).getPrefix();
+        prefixCommand = "\"suffix.10." + availableTitles.get(titleName).getPrefix() + suffixFromPrefix + "\"";
         command = "lp user " + nickname + " permission set " + prefixCommand + " server=skyblocknew";
         Debug.log("[Set command] " + command);
         //.getServer().getConsoleSender().sendMessage(command);
         owner.setCurrentTitle(titleName);
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+    }
+
+    public static void checkTitle(Player player){
+
+        Debug.log("&aSprawdzam tytul gracza " + player.getName());
+
+        Owner owner = Titles.getOwnerController().getOwner(player.getName());
+        Title title = availableTitles.get(owner.getCurrentTitle());
+
+        if(!owner.getCurrentTitle().equalsIgnoreCase("none")){
+
+
+
+            String prefix = PlaceholderAPI.setBracketPlaceholders(player, "{luckperms_prefix}");
+            String colorFromPrefix = prefix.substring(prefix.lastIndexOf(" ") + 1 );
+
+            String suffix = PlaceholderAPI.setBracketPlaceholders(player, "{luckperms_suffix}");
+            String colorFromSuffix = suffix.substring(suffix.lastIndexOf(" ") + 1 );
+
+            if( !colorFromPrefix.equalsIgnoreCase(colorFromSuffix) ){
+                Debug.log("PrefixColor: " + colorFromPrefix + "PrefixTest");
+                Debug.log("SuffixColor: " + colorFromSuffix + "SuffixTest");
+
+                Debug.log("&aSuffix nie jest prawidlowy... Poprawiam");
+
+                String clearSuffixCommand = "lp user " + player.getName() + " meta removesuffix 10 * skyblocknew";
+
+                Debug.log("[Unset command] " + clearSuffixCommand);
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), clearSuffixCommand);
+
+                String prefixCommand = "\"suffix.10." + availableTitles.get(title.getName()).getPrefix() + colorFromPrefix + "\"";
+                String command = "lp user " + player.getName() + " permission set " + prefixCommand + " server=skyblocknew";
+                Debug.log("[Set command] " + command);
+                //.getServer().getConsoleSender().sendMessage(command);
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+
+
+            }
+            else{
+                Debug.log("&aSuffix jest prawidlowy");
+            }
+
+
+        }
+
 
     }
 

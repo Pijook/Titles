@@ -1,10 +1,15 @@
 package pl.pijok.titles.listeners;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import pl.pijok.titles.Titles;
+import pl.pijok.titles.owner.Owner;
+import pl.pijok.titles.title.Title;
+import pl.pijok.titles.title.TitleController;
 
 public class JoinListener implements Listener {
 
@@ -14,6 +19,7 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
 
         Titles.getOwnerController().loadPlayer(player.getName());
+        TitleController.checkTitle(player);
 
     }
 }
