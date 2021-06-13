@@ -44,9 +44,13 @@ public class TitleCommand implements CommandExecutor {
                 StringBuilder stringBuilder = new StringBuilder("&ePlayers titles: &7");
 
                 Owner owner = Titles.getOwnerController().getOwner(target.getName());
-
-                for(Title title : owner.getUnlockedTitles()){
-                    stringBuilder.append(title.getName()).append(", ");
+                if( owner.getUnlockedTitles() == null || owner.getUnlockedTitles().size() == 0 ){
+                    stringBuilder.append("Brak");
+                }
+                else {
+                    for (Title title : owner.getUnlockedTitles()) {
+                        stringBuilder.append(title.getName()).append(", ");
+                    }
                 }
                 ChatUtils.sendMessage(sender, stringBuilder.toString());
                 return true;
