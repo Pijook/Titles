@@ -1,5 +1,6 @@
 package pl.pijok.titles.title;
 
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.mattstudios.mfgui.gui.components.ItemBuilder;
 import me.mattstudios.mfgui.gui.guis.Gui;
@@ -9,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import pl.pijok.titles.Titles;
 import pl.pijok.titles.essentials.ChatUtils;
@@ -199,11 +201,35 @@ public class TitleController {
             paginatedGui.setItem(a, fillItem);
         }
 
+        HeadDatabaseAPI api = new HeadDatabaseAPI();
         paginatedGui.setItem(50, ItemBuilder.from(Material.LIME_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&a&lNastepna strona")).asGuiItem(event -> {
+
+            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
+                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
+            }
+            else {
+                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
+            }
             paginatedGui.next();
         }));
 
+        if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
+        }
+        else {
+            paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
+        }
+
+
+
         paginatedGui.setItem(48, ItemBuilder.from(Material.RED_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&c&lPoprzednia strona")).asGuiItem(event -> {
+
+            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
+                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
+            }
+            else {
+                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
+            }
             paginatedGui.previous();
         }));
 
@@ -243,11 +269,39 @@ public class TitleController {
             paginatedGui.setItem(a, fillItem);
         }
 
+        HeadDatabaseAPI api = new HeadDatabaseAPI();
         paginatedGui.setItem(50, ItemBuilder.from(Material.LIME_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&a&lNastepna strona")).asGuiItem(event -> {
+            String pageName = "&5&lStrona " + paginatedGui.getNextPageNum();
+
+            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
+                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
+            }
+            else {
+                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getNextPageNum()))).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
+            }
             paginatedGui.next();
         }));
 
+
+        String pgName = "&5&lStrona " + paginatedGui.getNextPageNum();
+        if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("" + pgName)).asGuiItem());
+        }
+        else {
+            paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("" + pgName)).asGuiItem());
+        }
+
+
+
         paginatedGui.setItem(48, ItemBuilder.from(Material.RED_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&c&lPoprzednia strona")).asGuiItem(event -> {
+            String pageName = "&5&lStrona " + paginatedGui.getPrevPageNum();
+
+            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
+                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
+            }
+            else {
+                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getPrevPageNum()))).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
+            }
             paginatedGui.previous();
         }));
 

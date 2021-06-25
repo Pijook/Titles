@@ -41,6 +41,10 @@
       <id>placeholderapi</id>
       <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
     </repository>
+    <repository>
+      <id>headdatabase-api</id>
+      <url>https://mvn.intellectualsites.com/content/repositories/thirdparty/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
