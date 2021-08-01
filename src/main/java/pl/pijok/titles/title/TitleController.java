@@ -16,6 +16,7 @@ import pl.pijok.titles.Titles;
 import pl.pijok.titles.essentials.ChatUtils;
 import pl.pijok.titles.essentials.ConfigUtils;
 import pl.pijok.titles.essentials.Debug;
+import pl.pijok.titles.essentials.ItemCreator;
 import pl.pijok.titles.owner.Owner;
 
 import java.util.ArrayList;
@@ -105,19 +106,18 @@ public class TitleController {
         String prefix = PlaceholderAPI.setBracketPlaceholders(Bukkit.getPlayer("" + nickname), "{luckperms_prefix}");
         String suffixFromPrefix = prefix.substring(prefix.lastIndexOf(" ") + 1 );
         if(!owner.getCurrentTitle().equalsIgnoreCase("none")){
-//            prefixCommand = "suffix.10." + availableTitles.get(owner.getCurrentTitle()).getPrefix();
-//            command = "lp user " + nickname + " permission unset " + prefixCommand + " server=skyblocknew";
             command = "lp user " + nickname + " meta removesuffix 10 * skyblocknew";
 
             Debug.log("[Unset command] " + command);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         }
 
-        prefixCommand = "\"suffix.10." + availableTitles.get(titleName).getPrefix() + suffixFromPrefix + "\"";
+        prefixCommand = "\"suffix.10." + title.getPrefix() + suffixFromPrefix + "\"";
+
+        owner.setCurrentTitle(titleName);
+
         command = "lp user " + nickname + " permission set " + prefixCommand + " server=skyblocknew";
         Debug.log("[Set command] " + command);
-        //.getServer().getConsoleSender().sendMessage(command);
-        owner.setCurrentTitle(titleName);
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
@@ -130,15 +130,13 @@ public class TitleController {
 
         if(!owner.getCurrentTitle().equalsIgnoreCase("none")){
 
-
-
             String prefix = PlaceholderAPI.setBracketPlaceholders(player, "{luckperms_prefix}");
             String colorFromPrefix = prefix.substring(prefix.lastIndexOf(" ") + 1 );
 
             String suffix = PlaceholderAPI.setBracketPlaceholders(player, "{luckperms_suffix}");
             String colorFromSuffix = suffix.substring(suffix.lastIndexOf(" ") + 1 );
 
-            if( !colorFromPrefix.equalsIgnoreCase(colorFromSuffix) ){
+            if(!colorFromPrefix.equalsIgnoreCase(colorFromSuffix) ){
                 Debug.log("PrefixColor: " + colorFromPrefix + "PrefixTest");
                 Debug.log("SuffixColor: " + colorFromSuffix + "SuffixTest");
 
@@ -152,19 +150,12 @@ public class TitleController {
                 String prefixCommand = "\"suffix.10." + availableTitles.get(title.getName()).getPrefix() + colorFromPrefix + "\"";
                 String command = "lp user " + player.getName() + " permission set " + prefixCommand + " server=skyblocknew";
                 Debug.log("[Set command] " + command);
-                //.getServer().getConsoleSender().sendMessage(command);
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
-
-
             }
             else{
                 Debug.log("&aSuffix jest prawidlowy");
             }
-
-
         }
-
-
     }
 
     public Title getTitle(String titleName){
@@ -201,35 +192,26 @@ public class TitleController {
             paginatedGui.setItem(a, fillItem);
         }
 
-        HeadDatabaseAPI api = new HeadDatabaseAPI();
         paginatedGui.setItem(50, ItemBuilder.from(Material.LIME_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&a&lNastepna strona")).asGuiItem(event -> {
 
-            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
-                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
-            }
-            else {
-                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
-            }
+
+            String name = ChatUtils.fixColor("&5&lStrona " + (paginatedGui.getNextPageNum()));
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).asGuiItem());
+
+            Debug.log(paginatedGui.getCurrentPageNum());
+            Debug.log(paginatedGui.getNextPageNum());
+            paginatedGui.update();
             paginatedGui.next();
         }));
 
-        if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
-            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
-        }
-        else {
-            paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
-        }
 
-
+        paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + 1)).asGuiItem());
 
         paginatedGui.setItem(48, ItemBuilder.from(Material.RED_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&c&lPoprzednia strona")).asGuiItem(event -> {
 
-            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
-                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
-            }
-            else {
-                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("&5&lStrona " + paginatedGui.getCurrentPageNum())).asGuiItem());
-            }
+            String name = ChatUtils.fixColor("&5&lStrona " + (paginatedGui.getPrevPageNum()));
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).asGuiItem());
+            paginatedGui.update();
             paginatedGui.previous();
         }));
 

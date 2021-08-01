@@ -50,6 +50,8 @@ public class Titles extends JavaPlugin {
 
         Debug.log("&7Loading titles...");
         titleController.load();
+
+        Debug.log("&7Loading gui...");
         titleController.loadGui();
 
         Debug.log("&aEverything loaded! Starting!");

@@ -29,6 +29,10 @@ public class TitleCommand implements CommandExecutor {
                     Titles.getTitleController().openMainGui(player);
                     return true;
                 }
+                else{
+                    ChatUtils.sendMessage(sender, "&cTa komenda jest tylko dla graczy!");
+                    return true;
+                }
             }
         }
 
@@ -90,6 +94,7 @@ public class TitleCommand implements CommandExecutor {
 
         }
 
+        ChatUtils.sendMessage(sender,"&7/" + label + " openmenu");
         ChatUtils.sendMessage(sender,"&7/" + label + " unlockTitle <nickname> <title>");
         ChatUtils.sendMessage(sender,"&7/" + label + " removeTitle <nickname> <title>");
         ChatUtils.sendMessage(sender,"&7/" + label + " showTitles <nickname>");
