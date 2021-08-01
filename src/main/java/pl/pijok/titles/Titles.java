@@ -3,6 +3,7 @@ package pl.pijok.titles;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import pl.pijok.titles.category.CategoryController;
 import pl.pijok.titles.commands.TitleCommand;
 import pl.pijok.titles.essentials.Debug;
 import pl.pijok.titles.listeners.JoinListener;
@@ -15,6 +16,7 @@ public class Titles extends JavaPlugin {
     private static Titles instance;
     private static TitleController titleController;
     private static OwnerController ownerController;
+    private static CategoryController categoryController;
     private static Economy econ = null;
 
     @Override
@@ -23,6 +25,7 @@ public class Titles extends JavaPlugin {
 
         titleController = new TitleController();
         ownerController = new OwnerController();
+        categoryController = new CategoryController();
 
         if (!setupEconomy() ) {
             Debug.log(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
@@ -44,9 +47,12 @@ public class Titles extends JavaPlugin {
 
     }
 
-    private void loadStuff() {
+    public void loadStuff() {
 
         Debug.log("&aLoading Titles v1.0 by Pijok_");
+
+        Debug.log("&7Loading categories gui...");
+        categoryController.load();
 
         Debug.log("&7Loading titles...");
         titleController.load();
@@ -84,6 +90,10 @@ public class Titles extends JavaPlugin {
 
     public static OwnerController getOwnerController() {
         return ownerController;
+    }
+
+    public static CategoryController getCategoryController() {
+        return categoryController;
     }
 
 }

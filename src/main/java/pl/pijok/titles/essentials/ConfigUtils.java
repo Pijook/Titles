@@ -111,4 +111,46 @@ public class ConfigUtils {
         configuration.set(path + ".world", location.getWorld().getName());
     }
 
+    /**
+     * Gets itemstack from config
+     * @param configuration
+     * @param path
+     * @return
+     */
+    public static ItemStack getItemstack(YamlConfiguration configuration, String path){
+
+        Material material = Material.valueOf(configuration.getString(path + ".material"));
+
+        List<String> lore = new ArrayList<>();
+
+        if(configuration.contains(path + ".lore")){
+            for(String a : configuration.getStringList(path + ".lore")){
+                lore.add(ChatUtils.fixColor(a));
+            }
+        }
+
+        int amount = 1;
+
+        if(configuration.contains(path + ".amount")){
+            amount = configuration.getInt(path + ".amount");
+        }
+
+        String itemName = material.name();
+
+        if(configuration.contains(path + ".name")){
+            itemName = ChatUtils.fixColor(configuration.getString(path + ".name"));
+        }
+
+        ItemCreator creator = new ItemCreator(material, amount).setName(itemName).setLore(lore);
+
+        if(configuration.contains(path + ".enchants")){
+            for(String enchant : configuration.getConfigurationSection(path + ".enchants").getKeys(false)){
+                //itemStack.addUnsafeEnchantment(Enchantment.getByName(enchant), configuration.getInt(path + ".enchants." + enchant));
+                creator.addUnsafeEnchantment(Enchantment.getByName(enchant), configuration.getInt(path + ".enchants." + enchant));
+            }
+        }
+
+        return creator.toItemStack();
+    }
+
 }

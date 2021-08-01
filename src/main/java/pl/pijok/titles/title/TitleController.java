@@ -21,21 +21,30 @@ import pl.pijok.titles.owner.Owner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TitleController {
 
-    private HashMap<String, Title> availableTitles;
+    private LinkedHashMap<String, Title> availableTitles;
     private Gui mainGui;
 
     public void load(){
-        availableTitles = new HashMap<>();
+        availableTitles = new LinkedHashMap<>();
 
         YamlConfiguration configuration = ConfigUtils.load("titles.yml", Titles.getInstance());
 
         for(String titleName : configuration.getConfigurationSection("titles").getKeys(false)){
+
+            String category = "other";
+
+            if(configuration.contains("titles." + titleName + ".category")){
+                category = configuration.getString("titles." + titleName + ".category");
+            }
+
             Title title = new Title(
                     titleName,
+                    category,
                     configuration.getString("titles." + titleName + ".prefix"),
                     configuration.getDouble("titles." + titleName + ".price")
             );
@@ -59,7 +68,8 @@ public class TitleController {
 
         mainGui.setItem(15, ItemBuilder.from(Material.BOOK).setName(ChatUtils.fixColor("&e&lKup nowe tytuly")).asGuiItem(event -> {
 
-            openShop((Player) event.getWhoClicked());
+            //openShop((Player) event.getWhoClicked());
+            Titles.getCategoryController().openCategorySelect((Player) event.getWhoClicked());
 
         }));
 
@@ -166,13 +176,23 @@ public class TitleController {
         mainGui.open(player);
     }
 
-    private void openShop(Player player){
+    public void openShop(Player player, String category){
         Owner owner = Titles.getOwnerController().getOwner(player.getName());
 
         ArrayList<Title> notUnlockedTitles = new ArrayList<>();
 
         for(String titleName : availableTitles.keySet()){
+
+            if(titleName.equalsIgnoreCase("default")){
+                continue;
+            }
+
             Title title = availableTitles.get(titleName);
+
+            if(!title.getCategory().equalsIgnoreCase(category)){
+                continue;
+            }
+
             if(!owner.getUnlockedTitles().contains(title)){
                 notUnlockedTitles.add(title);
             }
@@ -194,23 +214,30 @@ public class TitleController {
 
         paginatedGui.setItem(50, ItemBuilder.from(Material.LIME_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&a&lNastepna strona")).asGuiItem(event -> {
 
-
             String name = ChatUtils.fixColor("&5&lStrona " + (paginatedGui.getNextPageNum()));
-            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).asGuiItem());
+            String lore = ChatUtils.fixColor("&7Kliknij aby wrocic do wyboru kategori");
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).setLore("", lore).asGuiItem(event1 -> {
+                Titles.getCategoryController().openCategorySelect((Player) event1.getWhoClicked());
+            }));
 
-            Debug.log(paginatedGui.getCurrentPageNum());
-            Debug.log(paginatedGui.getNextPageNum());
             paginatedGui.update();
             paginatedGui.next();
         }));
 
 
-        paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("&5&lStrona " + 1)).asGuiItem());
+        String lore1 = ChatUtils.fixColor("&7Kliknij aby wrocic do wyboru kategori");
+        String name1 = ChatUtils.fixColor("&5&lStrona " + 1);
+        paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name1).setLore("", lore1).asGuiItem(event1 -> {
+            Titles.getCategoryController().openCategorySelect((Player) event1.getWhoClicked());
+        }));
 
         paginatedGui.setItem(48, ItemBuilder.from(Material.RED_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&c&lPoprzednia strona")).asGuiItem(event -> {
 
             String name = ChatUtils.fixColor("&5&lStrona " + (paginatedGui.getPrevPageNum()));
-            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).asGuiItem());
+            String lore = ChatUtils.fixColor("&7Kliknij aby wrocic do wyboru kategori");
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).setLore("", lore).asGuiItem(event1 -> {
+                Titles.getCategoryController().openCategorySelect((Player) event1.getWhoClicked());
+            }));
             paginatedGui.update();
             paginatedGui.previous();
         }));

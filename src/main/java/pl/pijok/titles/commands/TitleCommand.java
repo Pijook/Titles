@@ -34,10 +34,33 @@ public class TitleCommand implements CommandExecutor {
                     return true;
                 }
             }
+
+            if(args[0].equalsIgnoreCase("reload")){
+                if(sender instanceof Player){
+                    Player player = (Player) sender;
+                    if(!player.hasPermission("sbtitles.admin")){
+                        ChatUtils.sendMessage(player, "&cNie masz dostepu do tej komendy!");
+                        return true;
+                    }
+                }
+
+                ChatUtils.sendMessage(sender, "&cReloading...");
+                Titles.getInstance().loadStuff();
+                return true;
+            }
         }
 
         if(args.length == 2){
             if(args[0].equalsIgnoreCase("showTitles")){
+
+                if(sender instanceof Player){
+                    Player player = (Player) sender;
+                    if(!player.hasPermission("sbtitles.admin")){
+                        ChatUtils.sendMessage(player, "&cNie masz dostepu do tej komendy!");
+                        return true;
+                    }
+                }
+
                 Player target = Bukkit.getPlayer(args[1]);
 
                 if(target == null || !target.isOnline()){
@@ -66,6 +89,14 @@ public class TitleCommand implements CommandExecutor {
 
             if(args[0].equalsIgnoreCase("unlockTitle")){
 
+                if(sender instanceof Player){
+                    Player player = (Player) sender;
+                    if(!player.hasPermission("sbtitles.admin")){
+                        ChatUtils.sendMessage(player, "&cNie masz dostepu do tej komendy!");
+                        return true;
+                    }
+                }
+
                 Player target = Bukkit.getPlayer(args[1]);
 
                 if(target == null || !target.isOnline()){
@@ -79,6 +110,14 @@ public class TitleCommand implements CommandExecutor {
             }
 
             if(args[0].equalsIgnoreCase("removeTitle")){
+
+                if(sender instanceof Player){
+                    Player player = (Player) sender;
+                    if(!player.hasPermission("sbtitles.admin")){
+                        ChatUtils.sendMessage(player, "&cNie masz dostepu do tej komendy!");
+                        return true;
+                    }
+                }
 
                 Player target = Bukkit.getPlayer(args[1]);
 
@@ -94,10 +133,28 @@ public class TitleCommand implements CommandExecutor {
 
         }
 
-        ChatUtils.sendMessage(sender,"&7/" + label + " openmenu");
-        ChatUtils.sendMessage(sender,"&7/" + label + " unlockTitle <nickname> <title>");
-        ChatUtils.sendMessage(sender,"&7/" + label + " removeTitle <nickname> <title>");
-        ChatUtils.sendMessage(sender,"&7/" + label + " showTitles <nickname>");
+        if(sender instanceof Player){
+            Player player = (Player) sender;
+            if(!player.hasPermission("sbtitles.admin")){
+                ChatUtils.sendMessage(sender,"&7/" + label + " openmenu");
+                return true;
+            }
+            else{
+                ChatUtils.sendMessage(sender,"&7/" + label + " reload");
+                ChatUtils.sendMessage(sender,"&7/" + label + " openmenu");
+                ChatUtils.sendMessage(sender,"&7/" + label + " unlockTitle <nickname> <title>");
+                ChatUtils.sendMessage(sender,"&7/" + label + " removeTitle <nickname> <title>");
+                ChatUtils.sendMessage(sender,"&7/" + label + " showTitles <nickname>");
+            }
+        }
+        else{
+            ChatUtils.sendMessage(sender,"&7/" + label + " reload");
+            ChatUtils.sendMessage(sender,"&7/" + label + " openmenu");
+            ChatUtils.sendMessage(sender,"&7/" + label + " unlockTitle <nickname> <title>");
+            ChatUtils.sendMessage(sender,"&7/" + label + " removeTitle <nickname> <title>");
+            ChatUtils.sendMessage(sender,"&7/" + label + " showTitles <nickname>");
+        }
+
         return true;
     }
 }
