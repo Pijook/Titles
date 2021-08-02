@@ -264,7 +264,7 @@ public class TitleController {
 
     private void openTitleSelect(Player player){
 
-        PaginatedGui paginatedGui = new PaginatedGui(6, "Kup nowe tytuly!");
+        PaginatedGui paginatedGui = new PaginatedGui(6, "Wybierz swoj tytul");
 
         paginatedGui.setDefaultClickAction(event -> {
             event.setCancelled(true);
@@ -278,43 +278,43 @@ public class TitleController {
             paginatedGui.setItem(a, fillItem);
         }
 
-        HeadDatabaseAPI api = new HeadDatabaseAPI();
+        //HeadDatabaseAPI api = new HeadDatabaseAPI();
         paginatedGui.setItem(50, ItemBuilder.from(Material.LIME_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&a&lNastepna strona")).asGuiItem(event -> {
-            String pageName = "&5&lStrona " + paginatedGui.getNextPageNum();
 
-            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
-                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
-            }
-            else {
-                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getNextPageNum()))).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
-            }
+            String name = ChatUtils.fixColor("&5&lStrona " + (paginatedGui.getNextPageNum()));
+            String lore = ChatUtils.fixColor("&7Kliknij aby wrocic do menu");
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).setLore("", lore).asGuiItem(event1 -> {
+                openMainGui((Player) event1.getWhoClicked());
+            }));
+
+            paginatedGui.update();
             paginatedGui.next();
         }));
 
-
-        String pgName = "&5&lStrona " + paginatedGui.getNextPageNum();
-        if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
-            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("" + pgName)).asGuiItem());
-        }
-        else {
-            paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum()))).setName(ChatUtils.fixColor("" + pgName)).asGuiItem());
-        }
-
-
+        String lore1 = ChatUtils.fixColor("&7Kliknij aby wrocic do menu");
+        String name1 = ChatUtils.fixColor("&5&lStrona " + 1);
+        paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name1).setLore("", lore1).asGuiItem(event1 -> {
+            openMainGui((Player) event1.getWhoClicked());
+        }));
 
         paginatedGui.setItem(48, ItemBuilder.from(Material.RED_STAINED_GLASS_PANE).setName(ChatUtils.fixColor("&c&lPoprzednia strona")).asGuiItem(event -> {
-            String pageName = "&5&lStrona " + paginatedGui.getPrevPageNum();
 
-            if( api.getItemHead("" + (44061 - paginatedGui.getCurrentPageNum())) == null ){
-                paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
-            }
-            else {
-                paginatedGui.setItem(49, ItemBuilder.from(api.getItemHead("" + (44061 - paginatedGui.getPrevPageNum()))).setName(ChatUtils.fixColor("" + pageName)).asGuiItem());
-            }
+            String name = ChatUtils.fixColor("&5&lStrona " + (paginatedGui.getPrevPageNum()));
+            String lore = ChatUtils.fixColor("&7Kliknij aby wrocic do menu");
+            paginatedGui.setItem(49, ItemBuilder.from(Material.WRITABLE_BOOK).setName(name).setLore("", lore).asGuiItem(event1 -> {
+                openMainGui((Player) event1.getWhoClicked());
+            }));
+            paginatedGui.update();
             paginatedGui.previous();
         }));
 
         Owner owner = Titles.getOwnerController().getOwner(player.getName());
+
+        paginatedGui.setItem(43, ItemBuilder.from(Material.BARRIER).setName(ChatUtils.fixColor("&c&lZresetuj")).asGuiItem(event -> {
+            setPlayerPrefix(event.getWhoClicked().getName(), "default");
+            ChatUtils.sendMessage(event.getWhoClicked(), "&aZmieniono prefix!");
+            paginatedGui.close(event.getWhoClicked());
+        }));
 
         for(Title title : owner.getUnlockedTitles()){
             paginatedGui.addItem(ItemBuilder.from(Material.PAPER).setName(ChatUtils.fixColor(title.getPrefix())).setLore("", ChatUtils.fixColor("&eWcisnij aby ustawic ten prefix")).asGuiItem(event -> {
